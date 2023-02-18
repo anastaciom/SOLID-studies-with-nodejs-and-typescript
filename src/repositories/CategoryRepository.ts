@@ -1,4 +1,4 @@
-import { Category, TCategory } from "../model/Category";
+import { Category } from "../model/Category";
 
 interface ICreateCategoryDTO {
   name: string;
@@ -6,7 +6,7 @@ interface ICreateCategoryDTO {
 }
 
 class CategoryRepository {
-  private categories: Array<TCategory>;
+  private categories: Array<Category>;
 
   constructor() {
     this.categories = [];
@@ -20,6 +20,16 @@ class CategoryRepository {
     });
 
     this.categories.push(newCategory);
+  }
+
+  list(): Array<Category> {
+    return this.categories;
+  }
+
+  findByName(name: string): Category {
+    const category = this.categories.find((category) => category.name === name);
+
+    return category;
   }
 }
 

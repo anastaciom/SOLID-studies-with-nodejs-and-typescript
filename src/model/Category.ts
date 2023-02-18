@@ -23,4 +23,4 @@ class Category {
   }
 }
 
-export { Category, TCategory };
+export { Category };
