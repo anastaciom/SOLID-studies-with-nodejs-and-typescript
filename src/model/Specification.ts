@@ -1,19 +1,19 @@
 import { v4 as uuidV4 } from "uuid";
 
-interface ICategory {
+interface ISpecification {
   id?: string;
   name: string;
   description: string;
   createdAt: Date;
 }
 
-class Category {
+class Specification {
   id?: string;
   name: string;
   description: string;
   createdAt: Date;
 
-  constructor({ createdAt, description, name, id }: ICategory) {
+  constructor({ createdAt, description, name, id }: ISpecification) {
     if (!id) {
       this.id = uuidV4();
     }
@@ -23,4 +23,4 @@ class Category {
   }
 }
 
-export default Category;
+export default Specification;
