@@ -1,19 +1,15 @@
 import { Router } from "express";
 import CategoryRepository from "../repositories/CategoryRepository";
+import CreateCategoryUseCase from "../useCases/CreateCategoryUseCase";
 
 const router = Router();
 const categoryRepository = new CategoryRepository();
+const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository);
 
 router.post("/", (req, res) => {
   const { name, description } = req.body;
 
-  const categoryAlreadyExists = categoryRepository.findByName(name);
-
-  if (categoryAlreadyExists) {
-    return res.status(400).json({ error: "Nome da categoria já existe" });
-  }
-
-  categoryRepository.create({ name, description });
+  createCategoryUseCase.execute({ name, description });
 
   return res.status(201).send();
 });
