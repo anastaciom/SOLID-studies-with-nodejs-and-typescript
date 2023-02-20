@@ -1,23 +1,25 @@
 import { Router } from "express";
+import CreateCategoryController from "../controllers/categories/CreateCategory";
+import ListCategoryController from "../controllers/categories/ListCategory";
 import CategoryRepository from "../repositories/categories/CategoryRepository";
 import CreateCategoryUseCase from "../useCases/categories/CreateCategoryUseCase";
+import ListCategoryUseCase from "../useCases/categories/ListCategoryUseCase";
 
 const router = Router();
+//Nesse caso para evitar ter muitas consts de classes, geralmente utilizamos um arquivo index para instanciar todas elas,
+// Mas nesse caso como é apenas para estudo eu mantive dessa forma
+
 const categoryRepository = new CategoryRepository();
 const createCategoryUseCase = new CreateCategoryUseCase(categoryRepository);
+const createCategoryController = new CreateCategoryController(
+  createCategoryUseCase
+);
+const listCategoryUseCase = new ListCategoryUseCase(categoryRepository);
 
-router.post("/", (req, res) => {
-  const { name, description } = req.body;
+const listCategoryController = new ListCategoryController(listCategoryUseCase);
 
-  createCategoryUseCase.execute({ name, description });
+router.post("/", (req, res) => createCategoryController.handle(req, res));
 
-  return res.status(201).send();
-});
-
-router.get("/", (_, res) => {
-  const listAll = categoryRepository.list();
-
-  return res.json(listAll);
-});
+router.get("/", (_, res) => listCategoryController.handle(_, res));
 
 export default router;
