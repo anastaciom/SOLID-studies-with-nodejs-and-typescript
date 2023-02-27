@@ -1,5 +1,6 @@
 import fs from "fs";
 import { parse as csvParse } from "csv-parse";
+import { ICategoryRepository } from "../../repositories/categories/ICategoryRepository";
 
 interface IFile {
   fieldname: string;
@@ -12,15 +13,46 @@ interface IFile {
   size: number;
 }
 
+interface IImportCategory {
+  name: string;
+  description: string;
+}
+
 class ImportCategoryUseCase {
-  execute({ path }: IFile) {
-    const stream = fs.createReadStream(path);
-    const parseFile = csvParse({ delimiter: "," });
+  constructor(private categoryRepository: ICategoryRepository) {}
 
-    stream.pipe(parseFile);
+  async execute(file: IFile): Promise<void> {
+    const categories = await this.loadCategories(file);
 
-    parseFile.on("data", async (line) => {
-      console.log(line);
+    categories.map(({ name, description }) => {
+      const existsCategory = this.categoryRepository.findByName(name);
+
+      if (!existsCategory) {
+        this.categoryRepository.create({ name, description });
+      }
+    });
+  }
+
+  private loadCategories({ path }: IFile): Promise<Array<IImportCategory>> {
+    return new Promise((resolve, reject) => {
+      const stream = fs.createReadStream(path);
+      const parseFile = csvParse({ delimiter: "," });
+      const categories: Array<IImportCategory> = [];
+
+      stream.pipe(parseFile);
+
+      parseFile
+        .on("data", async (line) => {
+          const [name, description] = line;
+
+          categories.push({ name, description });
+        })
+        .on("end", () => {
+          resolve(categories);
+        })
+        .on("error", (error) => {
+          reject(error);
+        });
     });
   }
 }

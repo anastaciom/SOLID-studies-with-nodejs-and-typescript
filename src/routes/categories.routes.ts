@@ -22,7 +22,7 @@ const createCategoryController = new CreateCategoryController(
 const listCategoryUseCase = new ListCategoryUseCase(categoryRepository);
 
 const listCategoryController = new ListCategoryController(listCategoryUseCase);
-const importCategoryUseCase = new ImportCategoryUseCase();
+const importCategoryUseCase = new ImportCategoryUseCase(categoryRepository);
 const importCategoryController = new ImportCategoryController(
   importCategoryUseCase
 );
