@@ -48,6 +48,7 @@ class ImportCategoryUseCase {
           categories.push({ name, description });
         })
         .on("end", () => {
+          fs.promises.unlink(path);
           resolve(categories);
         })
         .on("error", (error) => {
