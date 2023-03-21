@@ -1,0 +1,10 @@
+version: '2.15.1'
+
+services:
+  app:
+    build: .
+    container_name: api-with-solid-compose
+    ports:
+      - 3030:3030
+    volumes:
+      - .:/usr/app
